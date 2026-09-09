@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Grinchy's Prototype Model 1</title>
+
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+
+            color: white;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+
+                radial-gradient(
+                    circle at 10% 10%,
+                    #123d25,
+                    transparent 40%
+                ),
+
+                radial-gradient(
+                    circle at 90% 90%,
+                    #08783f,
+                    transparent 35%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #020806,
+                    #06150c,
+                    #092b18
+                );
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .container {
+
+            width: 95%;
+
+            max-width: 1100px;
+
+            height: 90vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+            overflow: hidden;
+
+            border-radius: 24px;
+
+            background:
+                rgba(255, 255, 255, 0.055);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.1);
+
+            backdrop-filter:
+                blur(20px);
+
+            box-shadow:
+                0 0 60px
+                rgba(0, 255, 120, 0.12);
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+
+            padding: 20px 24px;
+
+            font-size: 22px;
+
+            font-weight: 700;
+
+            color: #021008;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    #00ff88,
+                    #00d66f
+                );
+        }
+
+
+        .subtitle {
+
+            margin-top: 4px;
+
+            font-size: 13px;
+
+            font-weight: 500;
+
+            opacity: 0.7;
+        }
+
+
+        /* =====================================================
+           CHAT
+        ===================================================== */
+
+        #chat {
+
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding: 25px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 16px;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .message {
+
+            max-width: 75%;
+
+            padding:
+                13px 17px;
+
+            border-radius: 18px;
+
+            line-height: 1.55;
+
+            word-wrap: break-word;
+
+            white-space: pre-wrap;
+
+            animation:
+                appear 0.2s ease;
+        }
+
+
+        @keyframes appear {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(5px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        /* USER */
+
+        .user {
+
+            align-self: flex-end;
+
+            color: #001b0d;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #00ff88,
+                    #00c96b
+                );
+
+            border-bottom-right-radius: 5px;
+
+            font-weight: 600;
+        }
+
+
+        /* BOT */
+
+        .bot {
+
+            align-self: flex-start;
+
+            background:
+                rgba(255, 255, 255, 0.075);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+
+            border-bottom-left-radius: 5px;
+        }
+
+
+        /* =====================================================
+           INPUT
+        ===================================================== */
+
+        .input-area {
+
+            padding: 18px;
+
+            display: flex;
+
+            gap: 12px;
+
+            border-top:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+
+            background:
+                rgba(0, 0, 0, 0.12);
+        }
+
+
+        #msg {
+
+            flex: 1;
+
+            padding:
+                15px 17px;
+
+            border-radius: 14px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+
+            outline: none;
+
+            color: white;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            font-size: 15px;
+        }
+
+
+        #msg:focus {
+
+            border-color:
+                rgba(0, 255, 130, 0.5);
+
+            box-shadow:
+                0 0 15px
+                rgba(0, 255, 120, 0.08);
+        }
+
+
+        #msg::placeholder {
+
+            color: #7fa991;
+        }
+
+
+        /* =====================================================
+           SEND BUTTON
+        ===================================================== */
+
+        button {
+
+            padding:
+                0 25px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            color: #001b0d;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #00ff88,
+                    #00c96b
+                );
+
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s;
+        }
+
+
+        button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 0 25px
+                rgba(0, 255, 120, 0.35);
+        }
+
+
+        button:active {
+
+            transform:
+                translateY(0);
+        }
+
+
+        button:disabled {
+
+            opacity: 0.5;
+
+            cursor: not-allowed;
+
+            transform: none;
+
+            box-shadow: none;
+        }
+
+
+        /* =====================================================
+           SCROLLBAR
+        ===================================================== */
+
+        ::-webkit-scrollbar {
+
+            width: 7px;
+        }
+
+
+        ::-webkit-scrollbar-thumb {
+
+            background: #00b963;
+
+            border-radius: 10px;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .container {
+
+                width: 100%;
+
+                height: 100vh;
+
+                border-radius: 0;
+            }
+
+
+            .message {
+
+                max-width: 88%;
+            }
+
+
+            button {
+
+                padding:
+                    0 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================= -->
+
+        <div class="header">
+
+            🧠 Grinchy's Prototype Model 1
+
+            <div class="subtitle">
+
+                NVIDIA Nemotron 3 Ultra • Local Prototype
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CHAT
+        ================================================= -->
+
+        <div id="chat">
+
+            <div class="message bot">
+
+                Hey! 👋
+
+                <br><br>
+
+                I'm <b>Grinchy's Prototype Model 1</b>.
+
+                <br><br>
+
+                Powered by NVIDIA Nemotron 3 Ultra.
+
+                <br><br>
+
+                Ask me anything to get started.
+
+                <br><br>
+
+                You can also teach me something:
+
+                <br><br>
+
+                <b>
+                    remember my favorite game is Minecraft
+                </b>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             INPUT
+        ================================================= -->
+
+        <div class="input-area">
+
+            <input
+                id="msg"
+                type="text"
+                placeholder="Talk to Grinchy's Prototype Model 1..."
+                autocomplete="off"
+            >
+
+            <button
+                id="sendButton"
+                onclick="send()"
+            >
+                Send
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+
+        const input =
+            document.getElementById("msg");
+
+
+        const chat =
+            document.getElementById("chat");
+
+
+        const sendButton =
+            document.getElementById("sendButton");
+
+
+        /* =====================================================
+           ENTER KEY
+        ===================================================== */
+
+        input.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter"
+                    &&
+                    !event.shiftKey
+                ) {
+
+                    event.preventDefault();
+
+                    send();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           SEND MESSAGE
+        ===================================================== */
+
+        async function send() {
+
+
+            const message =
+                input.value.trim();
+
+
+            if (!message) {
+
+                return;
+
+            }
+
+
+            /* ================================================
+               USER MESSAGE
+            ================================================ */
+
+            const userMessage =
+                document.createElement("div");
+
+
+            userMessage.className =
+                "message user";
+
+
+            userMessage.textContent =
+                message;
+
+
+            chat.appendChild(
+                userMessage
+            );
+
+
+            input.value = "";
+
+
+            sendButton.disabled =
+                true;
+
+
+            input.disabled =
+                true;
+
+
+            chat.scrollTop =
+                chat.scrollHeight;
+
+
+            /* ================================================
+               BOT MESSAGE
+            ================================================ */
+
+            const botMessage =
+                document.createElement("div");
+
+
+            botMessage.className =
+                "message bot";
+
+
+            botMessage.textContent =
+                "";
+
+
+            chat.appendChild(
+                botMessage
+            );
+
+
+            try {
+
+
+                /* ============================================
+                   REQUEST
+                ============================================ */
+
+                const response =
+                    await fetch(
+                        "/chat",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    message:
+                                        message
+
+                                })
+
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Server returned HTTP " +
+                        response.status
+                    );
+
+                }
+
+
+                /* ============================================
+                   STREAM
+                ============================================ */
+
+                const reader =
+                    response.body.getReader();
+
+
+                const decoder =
+                    new TextDecoder();
+
+
+                while (true) {
+
+
+                    const {
+                        done,
+                        value
+                    } =
+                        await reader.read();
+
+
+                    if (done) {
+
+                        break;
+
+                    }
+
+
+                    const chunk =
+                        decoder.decode(
+                            value,
+                            {
+                                stream: true
+                            }
+                        );
+
+
+                    botMessage.textContent +=
+                        chunk;
+
+
+                    chat.scrollTop =
+                        chat.scrollHeight;
+
+                }
+
+
+                /* Flush decoder */
+
+                const finalChunk =
+                    decoder.decode();
+
+
+                if (finalChunk) {
+
+                    botMessage.textContent +=
+                        finalChunk;
+
+                }
+
+
+            }
+
+
+            catch (error) {
+
+
+                console.error(
+                    "Chat error:",
+                    error
+                );
+
+
+                botMessage.textContent =
+                    "❌ Could not connect to the AI.\n\n" +
+                    error.message;
+
+            }
+
+
+            finally {
+
+
+                sendButton.disabled =
+                    false;
+
+
+                input.disabled =
+                    false;
+
+
+                input.focus();
+
+
+            }
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
