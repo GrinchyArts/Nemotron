@@ -1,3 +1,4 @@
+```python
 import os
 import sqlite3
 import uuid
@@ -38,7 +39,73 @@ client = OpenAI(
     timeout=180.0,
 )
 
-app = FastAPI(title="Grinchy's Prototype Model 1")
+app = FastAPI(title="UPI Fraud Help Chatbot")
+
+
+# ============================================================
+# INKROACH PROFILE
+# ============================================================
+
+INKROACH_PROFILE = """
+Inkroach is an art streamer and illustrator.
+
+Inkroach is a published illustrator with Qissa Comics.
+
+Inkroach has participated in major art and manga-related contests,
+including the Silent Manga Audition and KADOKAWA contests.
+
+Inkroach was also shortlisted by Shueisha for one of his contest entries.
+
+Inkroach creates art content and streams art. He also helps other
+artists by giving art tips, demonstrations, explanations, and
+educational resources.
+
+Official social accounts:
+
+YouTube:
+www.youtube.com/@Inkroach
+
+Instagram:
+www.instagram.com/Inkroach/
+"""
+
+
+def is_inkroach_question(message: str):
+    """
+    Detect questions about Inkroach.
+
+    This is handled locally instead of relying on the AI model
+    to remember Inkroach's profile.
+    """
+
+    t = message.lower().strip()
+
+    # Direct mentions of Inkroach.
+    if "inkroach" not in t:
+        return False
+
+    question_patterns = [
+        "who is",
+        "who's",
+        "tell me about",
+        "what is",
+        "what's",
+        "what does",
+        "about",
+        "artist",
+        "illustrator",
+        "streamer",
+        "art streamer",
+        "qissa comics",
+        "shueisha",
+        "kadokawa",
+        "silent manga",
+        "youtube",
+        "instagram",
+        "social media",
+    ]
+
+    return any(pattern in t for pattern in question_patterns)
 
 
 # ============================================================
@@ -492,7 +559,7 @@ def get_recent_messages(session_id: str, limit=20):
         """,
         (
             session_id,
-            limit,
+            limit
         )
     ).fetchall()
 
@@ -529,9 +596,13 @@ def get_session_id(request: Request):
 
 def build_system_prompt(memory_text: str):
     return f"""
-You are Grinchy's Prototype Model 1.
+You are the UPI Fraud Help Chatbot.
 
-You are a helpful, friendly AI assistant.
+You were created by Grinchy.
+
+You are a helpful, friendly AI assistant focused primarily on
+UPI scams, digital-payment fraud awareness, online safety,
+and general assistance.
 
 You have two types of memory:
 
@@ -550,10 +621,33 @@ IMPORTANT MEMORY RULES:
 - Do not unnecessarily repeat memories.
 - Answer naturally.
 
+IMPORTANT CREATOR INFORMATION:
+- Grinchy is the creator of this specific chatbot.
+- If asked who created, made, built, or developed this chatbot, say that
+  Grinchy created it.
+- This chatbot uses NVIDIA's model/API underneath, but NVIDIA did not
+  create this specific chatbot.
+- Do not incorrectly claim that NVIDIA created this chatbot.
+
+IMPORTANT INKROACH INFORMATION:
+- Inkroach is an art streamer and illustrator.
+- Inkroach is a published illustrator with Qissa Comics.
+- Inkroach has participated in the Silent Manga Audition and KADOKAWA
+  contests.
+- Inkroach was shortlisted by Shueisha for one of his contest entries.
+- Inkroach creates art content and streams art.
+- Inkroach also helps other artists through art tips, demonstrations,
+  explanations, and educational resources.
+- If asked about Inkroach, use this information and do not invent
+  additional achievements or credentials.
+
 LONG-TERM MEMORIES:
 {memory_text}
 
 You can help with:
+- UPI and digital-payment fraud awareness
+- scam identification
+- online safety
 - coding
 - school
 - science
@@ -577,7 +671,7 @@ async def home():
     if not index_file.exists():
         return HTMLResponse(
             """
-            <h1>Grinchy's Prototype Model 1</h1>
+            <h1>UPI Fraud Help Chatbot</h1>
             <p>static/index.html was not found.</p>
             """,
             status_code=500,
@@ -768,6 +862,58 @@ async def chat(request: Request):
 
 
     # --------------------------------------------------------
+    # INKROACH PROFILE
+    # --------------------------------------------------------
+    #
+    # This happens BEFORE NVIDIA.
+    #
+    # Therefore the model cannot hallucinate or forget
+    # Inkroach's profile when directly asked about him.
+    # --------------------------------------------------------
+
+    if is_inkroach_question(message):
+
+        try:
+            save_message(
+                session_id,
+                "user",
+                message
+            )
+
+            save_message(
+                session_id,
+                "assistant",
+                INKROACH_PROFILE
+            )
+
+            async def inkroach_stream():
+                yield INKROACH_PROFILE
+
+            response = StreamingResponse(
+                inkroach_stream(),
+                media_type="text/plain"
+            )
+
+            response.headers["X-Session-ID"] = session_id
+
+            return response
+
+        except Exception as error:
+
+            print("\n================ INKROACH PROFILE ERROR ================")
+            print(repr(error))
+            print("==========================================================\n")
+
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "error": "Could not load Inkroach profile.",
+                    "details": str(error),
+                }
+            )
+
+
+    # --------------------------------------------------------
     # SAVE USER MESSAGE
     # --------------------------------------------------------
 
@@ -939,3 +1085,4 @@ if __name__ == "__main__":
         port=8000,
         reload=True
     )
+```
