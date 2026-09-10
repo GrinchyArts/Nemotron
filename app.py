@@ -1,4 +1,3 @@
-```python
 import os
 import sqlite3
 import uuid
@@ -1085,4 +1084,3 @@ if __name__ == "__main__":
         port=8000,
         reload=True
     )
-```
