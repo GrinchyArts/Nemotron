@@ -4,772 +4,1019 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Grinchy's Prototype Model 1</title>
+<title>Grinchy's Prototype Model 2</title>
 
 
-    <style>
+<style>
 
-        /* =====================================================
-           GLOBAL
-        ===================================================== */
+    /* =====================================================
+       GLOBAL
+       ===================================================== */
 
-        * {
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-            margin: 0;
 
-            padding: 0;
+    body {
 
-            box-sizing: border-box;
-        }
+        min-height: 100vh;
 
+        font-family:
+            Inter,
+            Arial,
+            sans-serif;
 
-        body {
+        color: white;
 
-            min-height: 100vh;
+        display: flex;
 
-            font-family:
-                Inter,
-                Arial,
-                sans-serif;
+        justify-content: center;
 
-            color: white;
+        align-items: center;
 
-            display: flex;
+        background:
 
-            justify-content: center;
+            radial-gradient(
+                circle at 10% 10%,
+                #123d25,
+                transparent 40%
+            ),
 
-            align-items: center;
+            radial-gradient(
+                circle at 90% 90%,
+                #08783f,
+                transparent 35%
+            ),
 
-            background:
+            linear-gradient(
+                135deg,
+                #020806,
+                #06150c,
+                #092b18
+            );
+    }
 
-                radial-gradient(
-                    circle at 10% 10%,
-                    #123d25,
-                    transparent 40%
-                ),
 
-                radial-gradient(
-                    circle at 90% 90%,
-                    #08783f,
-                    transparent 35%
-                ),
+    /* =====================================================
+       MAIN CONTAINER
+       ===================================================== */
 
-                linear-gradient(
-                    135deg,
-                    #020806,
-                    #06150c,
-                    #092b18
-                );
-        }
+    .container {
 
+        width: 95%;
 
-        /* =====================================================
-           MAIN CONTAINER
-        ===================================================== */
+        max-width: 1100px;
 
-        .container {
+        height: 90vh;
 
-            width: 95%;
+        display: flex;
 
-            max-width: 1100px;
+        flex-direction: column;
 
-            height: 90vh;
+        overflow: hidden;
 
-            display: flex;
+        border-radius: 24px;
 
-            flex-direction: column;
+        background:
+            rgba(255, 255, 255, 0.055);
 
-            overflow: hidden;
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.1);
 
-            border-radius: 24px;
+        backdrop-filter:
+            blur(20px);
 
-            background:
-                rgba(255, 255, 255, 0.055);
+        box-shadow:
+            0 0 60px
+            rgba(0, 255, 120, 0.12);
+    }
 
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.1);
 
-            backdrop-filter:
-                blur(20px);
+    /* =====================================================
+       HEADER
+       ===================================================== */
 
-            box-shadow:
-                0 0 60px
-                rgba(0, 255, 120, 0.12);
-        }
+    .header {
 
+        padding: 20px 24px;
 
-        /* =====================================================
-           HEADER
-        ===================================================== */
+        font-size: 22px;
 
-        .header {
+        font-weight: 700;
 
-            padding: 20px 24px;
+        color: #021008;
 
-            font-size: 22px;
+        background:
 
-            font-weight: 700;
+            linear-gradient(
+                90deg,
+                #00ff88,
+                #00d66f
+            );
+    }
 
-            color: #021008;
 
-            background:
+    .subtitle {
 
-                linear-gradient(
-                    90deg,
-                    #00ff88,
-                    #00d66f
-                );
-        }
+        margin-top: 4px;
 
+        font-size: 13px;
 
-        .subtitle {
+        font-weight: 500;
 
-            margin-top: 4px;
+        opacity: 0.7;
+    }
 
-            font-size: 13px;
 
-            font-weight: 500;
+    /* =====================================================
+       CHAT
+       ===================================================== */
 
-            opacity: 0.7;
-        }
+    #chat {
 
+        flex: 1;
 
-        /* =====================================================
-           CHAT
-        ===================================================== */
+        overflow-y: auto;
 
-        #chat {
+        padding: 25px;
 
-            flex: 1;
+        display: flex;
 
-            overflow-y: auto;
+        flex-direction: column;
 
-            padding: 25px;
+        gap: 16px;
+    }
 
-            display: flex;
 
-            flex-direction: column;
+    /* =====================================================
+       MESSAGE
+       ===================================================== */
 
-            gap: 16px;
-        }
+    .message {
 
+        max-width: 75%;
 
-        /* =====================================================
-           MESSAGE
-        ===================================================== */
+        padding:
+            13px 17px;
 
-        .message {
+        border-radius: 18px;
 
-            max-width: 75%;
+        line-height: 1.55;
 
-            padding:
-                13px 17px;
+        word-wrap: break-word;
 
-            border-radius: 18px;
+        white-space: pre-wrap;
 
-            line-height: 1.55;
+        animation:
+            appear 0.2s ease;
+    }
 
-            word-wrap: break-word;
 
-            white-space: pre-wrap;
+    @keyframes appear {
 
-            animation:
-                appear 0.2s ease;
-        }
+        from {
 
-
-        @keyframes appear {
-
-            from {
-
-                opacity: 0;
-
-                transform:
-                    translateY(5px);
-            }
-
-            to {
-
-                opacity: 1;
-
-                transform:
-                    translateY(0);
-            }
-        }
-
-
-        /* USER */
-
-        .user {
-
-            align-self: flex-end;
-
-            color: #001b0d;
-
-            background:
-
-                linear-gradient(
-                    135deg,
-                    #00ff88,
-                    #00c96b
-                );
-
-            border-bottom-right-radius: 5px;
-
-            font-weight: 600;
-        }
-
-
-        /* BOT */
-
-        .bot {
-
-            align-self: flex-start;
-
-            background:
-                rgba(255, 255, 255, 0.075);
-
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.08);
-
-            border-bottom-left-radius: 5px;
-        }
-
-
-        /* =====================================================
-           INPUT
-        ===================================================== */
-
-        .input-area {
-
-            padding: 18px;
-
-            display: flex;
-
-            gap: 12px;
-
-            border-top:
-                1px solid
-                rgba(255, 255, 255, 0.08);
-
-            background:
-                rgba(0, 0, 0, 0.12);
-        }
-
-
-        #msg {
-
-            flex: 1;
-
-            padding:
-                15px 17px;
-
-            border-radius: 14px;
-
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.08);
-
-            outline: none;
-
-            color: white;
-
-            background:
-                rgba(255, 255, 255, 0.06);
-
-            font-size: 15px;
-        }
-
-
-        #msg:focus {
-
-            border-color:
-                rgba(0, 255, 130, 0.5);
-
-            box-shadow:
-                0 0 15px
-                rgba(0, 255, 120, 0.08);
-        }
-
-
-        #msg::placeholder {
-
-            color: #7fa991;
-        }
-
-
-        /* =====================================================
-           SEND BUTTON
-        ===================================================== */
-
-        button {
-
-            padding:
-                0 25px;
-
-            border: none;
-
-            border-radius: 14px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            color: #001b0d;
-
-            background:
-
-                linear-gradient(
-                    135deg,
-                    #00ff88,
-                    #00c96b
-                );
-
-            transition:
-                transform 0.2s,
-                box-shadow 0.2s;
-        }
-
-
-        button:hover {
+            opacity: 0;
 
             transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 0 25px
-                rgba(0, 255, 120, 0.35);
+                translateY(5px);
         }
 
+        to {
 
-        button:active {
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+    }
+
+
+    /* =====================================================
+       USER MESSAGE
+       ===================================================== */
+
+    .user {
+
+        align-self: flex-end;
+
+        color: #001b0d;
+
+        background:
+
+            linear-gradient(
+                135deg,
+                #00ff88,
+                #00c96b
+            );
+
+        border-bottom-right-radius: 5px;
+
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       BOT MESSAGE
+       ===================================================== */
+
+    .bot {
+
+        align-self: flex-start;
+
+        background:
+            rgba(255, 255, 255, 0.075);
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.08);
+
+        border-bottom-left-radius: 5px;
+    }
+
+
+    /* =====================================================
+       THINKING INDICATOR
+       ===================================================== */
+
+    .thinking {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 5px;
+    }
+
+
+    .dot {
+
+        width: 6px;
+
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: #00ff88;
+
+        animation:
+            pulse 1.2s infinite;
+    }
+
+
+    .dot:nth-child(2) {
+
+        animation-delay:
+            0.15s;
+    }
+
+
+    .dot:nth-child(3) {
+
+        animation-delay:
+            0.3s;
+    }
+
+
+    @keyframes pulse {
+
+        0%,
+        60%,
+        100% {
+
+            opacity: 0.25;
 
             transform:
                 translateY(0);
         }
 
+        30% {
 
-        button:disabled {
+            opacity: 1;
 
-            opacity: 0.5;
+            transform:
+                translateY(-3px);
+        }
+    }
 
-            cursor: not-allowed;
 
-            transform: none;
+    /* =====================================================
+       INPUT AREA
+       ===================================================== */
 
-            box-shadow: none;
+    .input-area {
+
+        padding: 18px;
+
+        display: flex;
+
+        gap: 12px;
+
+        border-top:
+            1px solid
+            rgba(255, 255, 255, 0.08);
+
+        background:
+            rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* =====================================================
+       TEXT INPUT
+       ===================================================== */
+
+    #msg {
+
+        flex: 1;
+
+        min-height: 50px;
+
+        max-height: 150px;
+
+        resize: none;
+
+        padding:
+            14px 17px;
+
+        border-radius: 14px;
+
+        border:
+            1px solid
+            rgba(255, 255, 255, 0.08);
+
+        outline: none;
+
+        color: white;
+
+        background:
+            rgba(255, 255, 255, 0.06);
+
+        font-family:
+            Inter,
+            Arial,
+            sans-serif;
+
+        font-size: 15px;
+
+        line-height: 1.4;
+    }
+
+
+    #msg:focus {
+
+        border-color:
+            rgba(0, 255, 130, 0.5);
+
+        box-shadow:
+            0 0 15px
+            rgba(0, 255, 120, 0.08);
+    }
+
+
+    #msg::placeholder {
+
+        color: #7fa991;
+    }
+
+
+    /* =====================================================
+       SEND BUTTON
+       ===================================================== */
+
+    button {
+
+        min-width: 90px;
+
+        border: none;
+
+        border-radius: 14px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        color: #001b0d;
+
+        background:
+
+            linear-gradient(
+                135deg,
+                #00ff88,
+                #00c96b
+            );
+
+        transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+    }
+
+
+    button:hover {
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 0 25px
+            rgba(0, 255, 120, 0.35);
+    }
+
+
+    button:active {
+
+        transform:
+            translateY(0);
+    }
+
+
+    button:disabled {
+
+        opacity: 0.5;
+
+        cursor: not-allowed;
+
+        transform: none;
+
+        box-shadow: none;
+    }
+
+
+    /* =====================================================
+       SCROLLBAR
+       ===================================================== */
+
+    ::-webkit-scrollbar {
+
+        width: 7px;
+    }
+
+
+    ::-webkit-scrollbar-thumb {
+
+        background: #00b963;
+
+        border-radius: 10px;
+    }
+
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 600px) {
+
+        .container {
+
+            width: 100%;
+
+            height: 100vh;
+
+            border-radius: 0;
         }
 
 
-        /* =====================================================
-           SCROLLBAR
-        ===================================================== */
+        .header {
 
-        ::-webkit-scrollbar {
+            padding:
+                17px 18px;
 
-            width: 7px;
+            font-size: 19px;
         }
 
 
-        ::-webkit-scrollbar-thumb {
+        #chat {
 
-            background: #00b963;
-
-            border-radius: 10px;
+            padding: 18px;
         }
 
 
-        /* =====================================================
-           MOBILE
-        ===================================================== */
+        .message {
 
-        @media (max-width: 600px) {
-
-            .container {
-
-                width: 100%;
-
-                height: 100vh;
-
-                border-radius: 0;
-            }
-
-
-            .message {
-
-                max-width: 88%;
-            }
-
-
-            button {
-
-                padding:
-                    0 18px;
-            }
+            max-width: 88%;
         }
 
-    </style>
+
+        .input-area {
+
+            padding: 12px;
+        }
+
+
+        button {
+
+            min-width: 70px;
+        }
+    }
+
+</style>
 
 </head>
 
-
 <body>
 
+<div class="container">
 
-    <div class="container">
 
+    <!-- =================================================
+         HEADER
+         ================================================= -->
 
-        <!-- =================================================
-             HEADER
-        ================================================= -->
+    <div class="header">
 
-        <div class="header">
+        🧠 Grinchy's Prototype Model 1
 
-            🧠 Grinchy's Prototype Model 1
+        <div class="subtitle">
 
-            <div class="subtitle">
-
-                NVIDIA Nemotron 3 Ultra • Local Prototype
-
-            </div>
+            NVIDIA Nemotron 3.5 Lightning • Persistent Memory
 
         </div>
-
-
-        <!-- =================================================
-             CHAT
-        ================================================= -->
-
-        <div id="chat">
-
-            <div class="message bot">
-
-                Hey! 👋
-
-                <br><br>
-
-                I'm <b>Grinchy's Prototype Model 1</b>.
-
-                <br><br>
-
-                Powered by NVIDIA Nemotron 3 Ultra.
-
-                <br><br>
-
-                Ask me anything to get started.
-
-                <br><br>
-
-                You can also teach me something:
-
-                <br><br>
-
-                <b>
-                    remember my favorite game is Minecraft
-                </b>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             INPUT
-        ================================================= -->
-
-        <div class="input-area">
-
-            <input
-                id="msg"
-                type="text"
-                placeholder="Talk to Grinchy's Prototype Model 1..."
-                autocomplete="off"
-            >
-
-            <button
-                id="sendButton"
-                onclick="send()"
-            >
-                Send
-            </button>
-
-        </div>
-
 
     </div>
 
 
-    <script>
+    <!-- =================================================
+         CHAT
+         ================================================= -->
+
+    <div id="chat">
+
+        <div class="message bot">
+
+            Hey! 👋
+
+            <br><br>
+
+            I'm <b>Grinchy's Prototype Model 1</b>.
+
+            <br><br>
+
+            Powered by NVIDIA Nemotron 3.5 Lightning.
+
+            <br><br>
+
+            I now have persistent conversation
+            and long-term memory.
+
+            <br><br>
+
+            You can teach me something with:
+
+            <br><br>
+
+            <b>
+                remember my favorite game is Minecraft
+            </b>
+
+        </div>
+
+    </div>
 
 
-        /* =====================================================
-           ELEMENTS
-        ===================================================== */
+    <!-- =================================================
+         INPUT
+         ================================================= -->
 
-        const input =
-            document.getElementById("msg");
+    <div class="input-area">
 
-
-        const chat =
-            document.getElementById("chat");
-
-
-        const sendButton =
-            document.getElementById("sendButton");
+        <textarea
+            id="msg"
+            placeholder="Talk to Grinchy's Prototype Model 1..."
+            autocomplete="off"
+            rows="1"
+        ></textarea>
 
 
-        /* =====================================================
-           ENTER KEY
-        ===================================================== */
+        <button
+            id="sendButton"
+            onclick="send()"
+        >
+            Send
+        </button>
 
-        input.addEventListener(
-            "keydown",
-            function(event) {
+    </div>
 
-                if (
-                    event.key === "Enter"
-                    &&
-                    !event.shiftKey
-                ) {
 
-                    event.preventDefault();
+</div>
 
-                    send();
 
-                }
+<script>
 
-            }
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const input =
+        document.getElementById("msg");
+
+
+    const chat =
+        document.getElementById("chat");
+
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+
+    /* =====================================================
+       SESSION ID
+       ===================================================== */
+
+    let sessionId =
+        localStorage.getItem(
+            "grinchy_session_id"
         );
 
 
-        /* =====================================================
-           SEND MESSAGE
-        ===================================================== */
+    if (!sessionId) {
 
-        async function send() {
+        sessionId =
+            crypto.randomUUID();
 
+        localStorage.setItem(
+            "grinchy_session_id",
+            sessionId
+        );
+    }
 
-            const message =
-                input.value.trim();
 
+    /* =====================================================
+       AUTO RESIZE TEXTAREA
+       ===================================================== */
 
-            if (!message) {
+    input.addEventListener(
+        "input",
+        function() {
 
-                return;
+            input.style.height =
+                "auto";
 
-            }
+            input.style.height =
+                Math.min(
+                    input.scrollHeight,
+                    150
+                ) + "px";
 
+        }
+    );
 
-            /* ================================================
-               USER MESSAGE
-            ================================================ */
 
-            const userMessage =
-                document.createElement("div");
+    /* =====================================================
+       ENTER KEY
+       ===================================================== */
 
+    input.addEventListener(
+        "keydown",
+        function(event) {
 
-            userMessage.className =
-                "message user";
+            if (
+                event.key === "Enter"
+                &&
+                !event.shiftKey
+            ) {
 
+                event.preventDefault();
 
-            userMessage.textContent =
-                message;
-
-
-            chat.appendChild(
-                userMessage
-            );
-
-
-            input.value = "";
-
-
-            sendButton.disabled =
-                true;
-
-
-            input.disabled =
-                true;
-
-
-            chat.scrollTop =
-                chat.scrollHeight;
-
-
-            /* ================================================
-               BOT MESSAGE
-            ================================================ */
-
-            const botMessage =
-                document.createElement("div");
-
-
-            botMessage.className =
-                "message bot";
-
-
-            botMessage.textContent =
-                "";
-
-
-            chat.appendChild(
-                botMessage
-            );
-
-
-            try {
-
-
-                /* ============================================
-                   REQUEST
-                ============================================ */
-
-                const response =
-                    await fetch(
-                        "/chat",
-                        {
-
-                            method: "POST",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json"
-
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    message:
-                                        message
-
-                                })
-
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Server returned HTTP " +
-                        response.status
-                    );
-
-                }
-
-
-                /* ============================================
-                   STREAM
-                ============================================ */
-
-                const reader =
-                    response.body.getReader();
-
-
-                const decoder =
-                    new TextDecoder();
-
-
-                while (true) {
-
-
-                    const {
-                        done,
-                        value
-                    } =
-                        await reader.read();
-
-
-                    if (done) {
-
-                        break;
-
-                    }
-
-
-                    const chunk =
-                        decoder.decode(
-                            value,
-                            {
-                                stream: true
-                            }
-                        );
-
-
-                    botMessage.textContent +=
-                        chunk;
-
-
-                    chat.scrollTop =
-                        chat.scrollHeight;
-
-                }
-
-
-                /* Flush decoder */
-
-                const finalChunk =
-                    decoder.decode();
-
-
-                if (finalChunk) {
-
-                    botMessage.textContent +=
-                        finalChunk;
-
-                }
-
-
-            }
-
-
-            catch (error) {
-
-
-                console.error(
-                    "Chat error:",
-                    error
-                );
-
-
-                botMessage.textContent =
-                    "❌ Could not connect to the AI.\n\n" +
-                    error.message;
-
-            }
-
-
-            finally {
-
-
-                sendButton.disabled =
-                    false;
-
-
-                input.disabled =
-                    false;
-
-
-                input.focus();
-
+                send();
 
             }
 
         }
+    );
 
-    </script>
 
+    /* =====================================================
+       ADD USER MESSAGE
+       ===================================================== */
+
+    function addUserMessage(
+        message
+    ) {
+
+        const userMessage =
+            document.createElement(
+                "div"
+            );
+
+
+        userMessage.className =
+            "message user";
+
+
+        userMessage.textContent =
+            message;
+
+
+        chat.appendChild(
+            userMessage
+        );
+
+
+        scrollToBottom();
+
+    }
+
+
+    /* =====================================================
+       ADD BOT MESSAGE
+       ===================================================== */
+
+    function addBotMessage() {
+
+        const botMessage =
+            document.createElement(
+                "div"
+            );
+
+
+        botMessage.className =
+            "message bot";
+
+
+        botMessage.innerHTML = `
+            <span class="thinking">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </span>
+        `;
+
+
+        chat.appendChild(
+            botMessage
+        );
+
+
+        scrollToBottom();
+
+
+        return botMessage;
+
+    }
+
+
+    /* =====================================================
+       SCROLL
+       ===================================================== */
+
+    function scrollToBottom() {
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    }
+
+
+    /* =====================================================
+       SEND MESSAGE
+       ===================================================== */
+
+    async function send() {
+
+
+        const message =
+            input.value.trim();
+
+
+        if (!message) {
+
+            return;
+
+        }
+
+
+        /* ================================================
+           USER MESSAGE
+           ================================================ */
+
+        addUserMessage(
+            message
+        );
+
+
+        input.value = "";
+
+        input.style.height =
+            "auto";
+
+
+        sendButton.disabled =
+            true;
+
+
+        input.disabled =
+            true;
+
+
+        /* ================================================
+           BOT MESSAGE
+           ================================================ */
+
+        const botMessage =
+            addBotMessage();
+
+
+        try {
+
+
+            /* ============================================
+               REQUEST
+               ============================================ */
+
+            const response =
+                await fetch(
+                    "/chat",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "X-Session-ID":
+                                sessionId
+
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                message:
+                                    message
+
+                            })
+
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Server returned HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            /* ============================================
+               UPDATE SESSION ID
+               ============================================ */
+
+            const returnedSessionId =
+                response.headers.get(
+                    "X-Session-ID"
+                );
+
+
+            if (returnedSessionId) {
+
+                sessionId =
+                    returnedSessionId;
+
+                localStorage.setItem(
+                    "grinchy_session_id",
+                    sessionId
+                );
+
+            }
+
+
+            /* ============================================
+               STREAM
+               ============================================ */
+
+            const reader =
+                response.body.getReader();
+
+
+            const decoder =
+                new TextDecoder();
+
+
+            let firstChunk =
+                true;
+
+
+            while (true) {
+
+
+                const {
+                    done,
+                    value
+                } =
+                    await reader.read();
+
+
+                if (done) {
+
+                    break;
+
+                }
+
+
+                const chunk =
+                    decoder.decode(
+                        value,
+                        {
+                            stream: true
+                        }
+                    );
+
+
+                if (firstChunk) {
+
+                    botMessage.textContent =
+                        "";
+
+                    firstChunk =
+                        false;
+
+                }
+
+
+                botMessage.textContent +=
+                    chunk;
+
+
+                scrollToBottom();
+
+            }
+
+
+            /* ============================================
+               FLUSH DECODER
+               ============================================ */
+
+            const finalChunk =
+                decoder.decode();
+
+
+            if (finalChunk) {
+
+                if (firstChunk) {
+
+                    botMessage.textContent =
+                        "";
+
+                }
+
+                botMessage.textContent +=
+                    finalChunk;
+
+            }
+
+
+        }
+
+
+        catch (error) {
+
+
+            console.error(
+                "Chat error:",
+                error
+            );
+
+
+            botMessage.textContent =
+                "❌ Could not connect to the AI.\n\n" +
+                error.message;
+
+        }
+
+
+        finally {
+
+
+            sendButton.disabled =
+                false;
+
+
+            input.disabled =
+                false;
+
+
+            input.focus();
+
+        }
+
+    }
+
+</script>
 
 </body>
 
