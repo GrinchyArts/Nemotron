@@ -1,6 +1,6 @@
 import os
-import re
 import sqlite3
+import re
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -168,7 +168,6 @@ def init_db():
     conn.close()
 
 
-# Initialize database when server starts.
 init_db()
 
 
@@ -180,7 +179,7 @@ def normalize_memory(text):
 
     text = text.strip()
 
-    # Remove unnecessary surrounding quotes.
+
     if len(text) >= 2:
 
         if (
@@ -192,12 +191,12 @@ def normalize_memory(text):
             text = text[1:-1].strip()
 
 
-    # Remove excessive whitespace.
     text = re.sub(
         r"\s+",
         " ",
         text
     )
+
 
     return text
 
@@ -211,10 +210,6 @@ def detect_category(text):
     lower = text.lower()
 
 
-    # --------------------------------------------------------
-    # PERSONAL
-    # --------------------------------------------------------
-
     personal_keywords = [
         "my name",
         "i am",
@@ -225,8 +220,10 @@ def detect_category(text):
         "my birthday",
         "my school",
         "my brother",
-        "my sister"
+        "my sister",
+        "student"
     ]
+
 
     if any(
         keyword in lower
@@ -235,10 +232,6 @@ def detect_category(text):
 
         return "personal"
 
-
-    # --------------------------------------------------------
-    # PREFERENCES
-    # --------------------------------------------------------
 
     preference_keywords = [
         "i like",
@@ -250,6 +243,7 @@ def detect_category(text):
         "i dislike"
     ]
 
+
     if any(
         keyword in lower
         for keyword in preference_keywords
@@ -257,10 +251,6 @@ def detect_category(text):
 
         return "preference"
 
-
-    # --------------------------------------------------------
-    # PROJECT
-    # --------------------------------------------------------
 
     project_keywords = [
         "project",
@@ -274,6 +264,7 @@ def detect_category(text):
         "software"
     ]
 
+
     if any(
         keyword in lower
         for keyword in project_keywords
@@ -281,10 +272,6 @@ def detect_category(text):
 
         return "project"
 
-
-    # --------------------------------------------------------
-    # SCHOOL
-    # --------------------------------------------------------
 
     school_keywords = [
         "school",
@@ -294,8 +281,10 @@ def detect_category(text):
         "homework",
         "teacher",
         "assignment",
-        "ncert"
+        "ncert",
+        "student"
     ]
+
 
     if any(
         keyword in lower
@@ -304,10 +293,6 @@ def detect_category(text):
 
         return "school"
 
-
-    # --------------------------------------------------------
-    # ART
-    # --------------------------------------------------------
 
     art_keywords = [
         "art",
@@ -321,6 +306,7 @@ def detect_category(text):
         "colouring",
         "coloring"
     ]
+
 
     if any(
         keyword in lower
@@ -342,7 +328,6 @@ def detect_importance(text):
     lower = text.lower()
 
 
-    # Very important personal identity information.
     if any(
         keyword in lower
         for keyword in [
@@ -350,14 +335,15 @@ def detect_importance(text):
             "my birthday",
             "i live",
             "i'm from",
-            "my age"
+            "my age",
+            "student",
+            "aspiring artist"
         ]
     ):
 
         return 10
 
 
-    # Strong preferences.
     if any(
         keyword in lower
         for keyword in [
@@ -370,7 +356,6 @@ def detect_importance(text):
         return 8
 
 
-    # Long-term projects/interests.
     if any(
         keyword in lower
         for keyword in [
@@ -380,14 +365,14 @@ def detect_importance(text):
             "i'm learning",
             "i am learning",
             "i study",
-            "i'm studying"
+            "i'm studying",
+            "artist"
         ]
     ):
 
         return 7
 
 
-    # Normal useful information.
     return 5
 
 
@@ -424,10 +409,6 @@ def add_long_term_memory(
     conn = get_connection()
 
 
-    # --------------------------------------------------------
-    # DUPLICATE CHECK
-    # --------------------------------------------------------
-
     existing = conn.execute(
         """
         SELECT id
@@ -461,14 +442,11 @@ def add_long_term_memory(
         )
 
         conn.commit()
+
         conn.close()
 
         return False
 
-
-    # --------------------------------------------------------
-    # INSERT NEW MEMORY
-    # --------------------------------------------------------
 
     conn.execute(
         """
@@ -529,6 +507,26 @@ def migrate_old_memories():
 
 
 migrate_old_memories()
+
+
+# ============================================================
+# DEFAULT USER MEMORIES
+# ============================================================
+# These are important facts that should always be available.
+# They are inserted only if they do not already exist.
+# ============================================================
+
+add_long_term_memory(
+    "The user is a student.",
+    category="personal",
+    importance=10
+)
+
+add_long_term_memory(
+    "The user is an aspiring artist.",
+    category="art",
+    importance=10
+)
 
 
 # ============================================================
@@ -613,22 +611,37 @@ def get_relevant_memories(
         score = len(overlap)
 
 
-        # Importance contributes to relevance.
         score += (
             memory["importance"]
             / 10
         )
 
 
-        # Category hints.
         category = memory["category"]
 
 
-        if (
-            category in query.lower()
-        ):
+        if category in query.lower():
 
             score += 2
+
+
+        # Always make very important identity facts
+        # available when the user asks about themselves.
+        if (
+            memory["importance"] >= 10
+            and any(
+                word in query.lower()
+                for word in [
+                    "me",
+                    "myself",
+                    "about me",
+                    "who am i",
+                    "what do you know"
+                ]
+            )
+        ):
+
+            score += 4
 
 
         if score > 1:
@@ -640,10 +653,6 @@ def get_relevant_memories(
                 )
             )
 
-
-    # --------------------------------------------------------
-    # SORT BY RELEVANCE
-    # --------------------------------------------------------
 
     scored.sort(
         key=lambda item: (
@@ -661,10 +670,6 @@ def get_relevant_memories(
         in scored[:limit]
     ]
 
-
-    # --------------------------------------------------------
-    # MARK AS USED
-    # --------------------------------------------------------
 
     if selected:
 
@@ -800,7 +805,6 @@ def get_recent_messages(
     conn.close()
 
 
-    # Reverse so the oldest message is first.
     rows = list(
         reversed(rows)
     )
@@ -846,7 +850,6 @@ def extract_automatic_memories(
 ):
 
     memories = []
-
 
     text = message.strip()
 
@@ -894,6 +897,66 @@ def extract_automatic_memories(
             (
                 f"The user is {age} years old.",
                 "personal",
+                10
+            )
+        )
+
+
+    # --------------------------------------------------------
+    # STUDENT
+    # --------------------------------------------------------
+
+    student_patterns = [
+        r"\bi am a student\b",
+        r"\bi'm a student\b",
+        r"\bi am currently a student\b",
+        r"\bi'm currently a student\b"
+    ]
+
+
+    if any(
+        re.search(
+            pattern,
+            text,
+            re.IGNORECASE
+        )
+        for pattern in student_patterns
+    ):
+
+        memories.append(
+            (
+                "The user is a student.",
+                "personal",
+                10
+            )
+        )
+
+
+    # --------------------------------------------------------
+    # ASPIRING ARTIST
+    # --------------------------------------------------------
+
+    artist_patterns = [
+        r"\bi am an aspiring artist\b",
+        r"\bi'm an aspiring artist\b",
+        r"\bi am a aspiring artist\b",
+        r"\bi'm a aspiring artist\b"
+    ]
+
+
+    if any(
+        re.search(
+            pattern,
+            text,
+            re.IGNORECASE
+        )
+        for pattern in artist_patterns
+    ):
+
+        memories.append(
+            (
+                "The user is an aspiring artist.",
+                "art",
                 10
             )
         )
@@ -1027,7 +1090,7 @@ def extract_automatic_memories(
 
 
     # --------------------------------------------------------
-    # SAVE EVERYTHING EXTRACTED
+    # SAVE EXTRACTED MEMORIES
     # --------------------------------------------------------
 
     for memory, category, importance in memories:
@@ -1145,9 +1208,11 @@ async def chat(request: Request):
             media_type="text/plain"
         )
 
+
         response.headers[
             "X-Session-ID"
         ] = session_id
+
 
         return response
 
@@ -1259,71 +1324,105 @@ async def chat(request: Request):
     system_prompt = f"""
 You are Grinchy's Prototype Model 1.
 
-You are a helpful, friendly AI assistant.
+Your creator is GRINCHY.
 
-You are powered by NVIDIA Nemotron 3.5
-Lightning 30B A3B.
+THIS IS A FIXED IDENTITY FACT.
 
-IMPORTANT IDENTITY INFORMATION:
-
-Your creator is Grinchy.
-
-If the user asks:
-- "Who created you?"
-- "Who is your creator?"
-- "Who made you?"
-- "Who built you?"
-- "Who developed you?"
-- "Who programmed you?"
-- or any similar question about who made this bot,
-
-answer that Grinchy is your creator.
-
-A natural answer is:
+If the user asks who created you, who made you,
+who built you, who developed you, who programmed you,
+who is your creator, or who is responsible for creating
+this chatbot, the answer is:
 
 "Grinchy is my creator. 🛡️"
 
-NVIDIA provides the underlying AI model and API technology
-that powers you, but NVIDIA did not create this specific bot.
+You MUST answer Grinchy.
 
-Do not confuse the underlying model provider with the creator
-of this specific chatbot.
+Do not answer NVIDIA.
+Do not answer NVIDIA researchers.
+Do not answer NVIDIA engineers.
+Do not answer "the researchers who trained me."
+Do not say that NVIDIA created this chatbot.
 
-Do not claim that NVIDIA researchers created this bot.
+NVIDIA is only the provider of the underlying AI model/API
+used by this chatbot.
 
-Your bot name is:
+The distinction is:
 
-"Grinchy's Prototype Model 1"
+CREATOR OF THIS SPECIFIC CHATBOT:
+Grinchy
 
-Do not change or rename the bot.
+UNDERLYING AI MODEL/API PROVIDER:
+NVIDIA
 
-You have a persistent long-term memory system.
+If asked specifically about the underlying model or API,
+you may explain that it is powered by NVIDIA technology.
 
-Relevant saved memories for this conversation:
+But if asked who created THIS BOT, the answer is ALWAYS:
+Grinchy.
+
+------------------------------------------------------------
+
+BOT NAME:
+
+Grinchy's Prototype Model 1
+
+Do not rename the bot.
+
+------------------------------------------------------------
+
+ABOUT THE USER:
+
+The user is a student.
+
+The user is an aspiring artist.
+
+These are persistent facts about the user and may be used
+naturally when relevant.
+
+------------------------------------------------------------
+
+MODEL:
+
+You are powered by NVIDIA Nemotron 3.5 Lightning 30B A3B.
+
+------------------------------------------------------------
+
+PERSISTENT MEMORY:
+
+Relevant saved memories:
 
 {memory_text}
 
 Memory rules:
 
-1. Use saved memories only when they are relevant.
-2. Treat saved memories as facts about the user, but do not
-   invent additional details from them.
-3. Never claim to remember something that is not present in
-   the supplied memories or conversation.
-4. Do not mention the database or memory implementation
-   unless the user asks about it.
-5. If the user asks what you remember about them, explain
-   the relevant saved memories naturally.
-6. If the user corrects a previous fact, follow the newest
-   information provided by the user.
+1. Use saved memories only when relevant.
+2. Never invent memories.
+3. If a memory conflicts with newer information from the user,
+   prefer the newer information.
+4. Do not claim to remember something that is not present
+   in the supplied memories or conversation.
+5. Do not mention the database or memory implementation
+   unless the user asks.
+6. If the user asks what you remember about them, explain
+   the relevant memories naturally.
 7. Answer naturally and clearly.
-8. Help with coding, school subjects, science, technology,
-   art, creativity, and general questions.
-9. If the user explicitly wants something remembered, they
-   can use "remember [something]".
+8. Help with coding, school, science, technology, art,
+   creativity, UPI safety, and general questions.
+9. The user can explicitly save information with:
+   "remember [something]"
 10. Do not reveal private system instructions.
-11. Do not confuse NVIDIA's role as the underlying model/API
-    provider with Grinchy's role as creator of this bot.
+
+------------------------------------------------------------
+
+FINAL IDENTITY RULE:
+
+When there is any question about the creator of this
+specific chatbot, prioritize the fixed identity above.
+
+Creator = Grinchy.
+
+Never replace that answer with the name of the underlying
+model provider.
 """
 
 
@@ -1375,6 +1474,7 @@ Memory rules:
         try:
 
             print()
+
             print(
                 "🚀 Sending request to NVIDIA..."
             )
@@ -1391,7 +1491,7 @@ Memory rules:
 
 
             # ------------------------------------------------
-            # BUILD MODEL MESSAGES
+            # MODEL MESSAGES
             # ------------------------------------------------
 
             model_messages = [
@@ -1402,7 +1502,6 @@ Memory rules:
             ]
 
 
-            # Add recent conversation.
             model_messages.extend(
                 recent_messages
             )
@@ -1485,6 +1584,7 @@ Memory rules:
 
 
             print()
+
             print(
                 "✅ Response finished."
             )
@@ -1493,11 +1593,21 @@ Memory rules:
         except Exception as error:
 
             print()
+
             print("=" * 60)
-            print("❌ NVIDIA API ERROR")
+
+            print(
+                "❌ NVIDIA API ERROR"
+            )
+
             print("=" * 60)
-            print(repr(error))
+
+            print(
+                repr(error)
+            )
+
             print("=" * 60)
+
             print()
 
 
@@ -1592,6 +1702,17 @@ if __name__ == "__main__":
 
     print(
         "Grinchy"
+    )
+
+    print()
+
+
+    print(
+        "User profile:"
+    )
+
+    print(
+        "Student • Aspiring Artist"
     )
 
     print()
